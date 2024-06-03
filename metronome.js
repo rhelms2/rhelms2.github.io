@@ -66,7 +66,7 @@ class Metronome {
         this.generateBar();
         this.intervalId = setInterval(() => this.scheduler(), 100);
 
-        this.visualizer = new MetronomeAnimation('canvas', 'speed', 'radius', 'archeight');   // Instantiate MetronomeAnimation
+        this.visualizer = new MetronomeAnimation('canvas', 'speed', 'radius', 'archeight');   // Instantiate BouncingDotAnimation
         this.visualizer.start();
     }
 
@@ -74,15 +74,12 @@ class Metronome {
         const currentValue = this.playButton.value;
         if (currentValue === "On") {
             this.playButton.value = "Off";
-            this.playButton.innerHTML = "Play";
             console.log("Turned off"); // Add code to stop the metronome if it's playing
             this.playing = false;
             this.lastNote = 0;
             this.lastNoteP = 0;
-            this.visualizer.stop();
         } else {
             this.playButton.value = "On"; 
-            this.playButton.innerHTML = "Stop";
             console.log("Turned on");
             this.playing = true;
             this.lastNote = this.audioContext.currentTime - this.notePeriod + 0.001;
@@ -91,14 +88,13 @@ class Metronome {
             }
             this.currentBeat = 0; // Reset the current beat when the metronome starts.
             this.currentBeatP = 0; // Reset the current beat when the metronome starts.
-            this.visualizer.play();
         }
     }
 
     polyOnOff() { // Allows the poly button to operate as a toggle
         const currentValue = this.polyButton.value;
         if (currentValue === "On") {
-            this.polyButton.innerText = "Add Polyrhythm";
+            this.polyButton.innerText = "+Polyrhythm";
             this.polyButton.value = "Off";
             this.playButton.value = "Off";
             this.polyrhythmActive = false;
@@ -135,7 +131,7 @@ class Metronome {
                 
                 this.generateBar();
             });
-            this.polyButton.innerText = "Remove Polyrhythm";
+            this.polyButton.innerText = "-Polyrhythm";
             this.polyrhythmActive = true;
             this.lastNote = 0; 
             this.lastNoteP = 0;
@@ -258,7 +254,7 @@ class Metronome {
             } else {
                 this.audiosPerBeat = Array(beatsPerBar).fill(0);
                 this.barContainer.innerHTML = '';
-                for (let i = 0; i < beatsPerBar; i++) {                     // Look at this to change image color when selected
+                for (let i = 0; i < beatsPerBar; i++) {
                     const beatContainer = document.createElement('div');
                     beatContainer.classList.add('beat-container'); // Create a container
 

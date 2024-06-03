@@ -1,4 +1,4 @@
-class Tuner {
+class Tuner { // 
     constructor(audioContext, pitchDisplayId) {
         this.audioContext = audioContext;
         this.pitchDisplay = document.getElementById(pitchDisplayId);
@@ -63,6 +63,8 @@ class Tuner {
         this.pendulum.style.backgroundColor = 'black';
     }
 
+
+
     pitchClassAndCents(pitch) {
         if (pitch === 0) { return ["--", 0]; }
         let pitchInOctave0 = pitch;
@@ -92,9 +94,15 @@ class Tuner {
         this.analyser.getByteFrequencyData(this.dataArray);
         const maxIndex = this.dataArray.indexOf(Math.max(...this.dataArray));
         const pitch = maxIndex * this.audioContext.sampleRate / this.analyser.fftSize;
-        const [note, cents] = this.pitchClassAndCents(pitch);
+        let [note, cents] = this.pitchClassAndCents(pitch);
+
+        if (Math.abs(cents) <= 5) {
+            cents = 0;
+        }
+
         this.pitchDisplay.textContent = `${note}`;
         this.centsDisplay.textContent = `${cents > 0 ? '+' : ''}${cents} cents`;
+
 
         const maxAngle = 60;
         const angle = ((cents / 50) * maxAngle) + 180;
