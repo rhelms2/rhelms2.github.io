@@ -1,72 +1,25 @@
-# MetreGnome
-
-
-# Descritption #
-
-
-The MetroGnome project is a web-based application aimed at combining a tuner, metronome, and rhythm tracker into a single, integrated tool for musicians. The application is designed to enhance musicians' practice sessions by reducing distractions and providing accurate rhythm tracking. JavaScript is used to control the back end functionality, while HTML and CSS work in conjunction for the User Interface.
-
-
-# Authors #
-
-
-- Miles Anderson
-- Ryham Helms
-- Dax Lynch
-- Harry Robertson
-
-
-This Repository was made Thursday May 8th 2024 for Anthony Hornof's CS 422 Software Methodologies at the University of Oregon. This is our submission for our project 2.
-
-
-
-
-# Usage #
-
-
-To run this, use Pythons builtin http server, run:
-`python3 -m http.server 8880` in your console
-And then in your browser you MUST go to http://localhost:8880/
-
-
-# Installation #
-
-
-Please complete the steps found in [Instillation.md] Once you have installed the requirements and set up a local server. You are ready to launch the program.
-
-
-# Dependencies #
-
-
-The code runs on Python 3.12, as it's built in http server functionality allowed for ease of testing and desgin when we were desgining our system.
-
-
-As our system sends and recieves audio, an audioContext object is initalizied upon loading up the webapp to give the user the ability to input sound sources. This is a built in part of JavaScripts WebAudio API
-
-
-No external libraries are used, everything is built into JS, CSS and HTML.
-
-
-# Classes #
-
-
-Rhythm Tracker -
-The Rhythm Tracker class analyzes audio input in real-time to track rhythmic patterns. It detects beats and displays them on a visual interface, allowing users to record and analyze their performances.
-
-
-Tuner -
-The Tuner class provides real-time pitch detection and display. It analyzes audio input from the user's microphone and determines the current pitch. The detected pitch is displayed along with the deviation in cents from the nearest note.
-
-
-Metronome -
-The Metronome class generates metronome beats based on user-defined tempo and time signature. It offers features such as regular and polyrhythmic modes, allowing users to customize their rhythmic patterns.
-
-
-
-
-Each of these is a seperate JavaScript file, which are all initalized in [script.js], [main.html] and [styles.css] handle the user interface.
-
-
-
-
-
+1. MetroGnome is an assistive musical software that combines tuning, rhythm tracking, and a metronome. It combines multiple modules to provide musicians an environment with limited external distraction.
+2. MetroGnome was developed by Miles Anderson, Ryan Helms, Dax Lynch, and Harry Robertson
+3. It was created between May and June in the year of our lord 2024.
+4. It was developed for CS 422 at the University of Oregon
+5. To start the program, open up the user Installation Instructions contained in the documentation folder.
+6. The software dependencies are python3, for the local server, and an internet browser. Hardware dependencies are working audio input and output sources.
+7. File structure overview:
+    -assets
+        -chime.png
+        -chime.wav
+        -chime_high.wav 
+        -cowbell.png 
+        -cymbal.png
+        -cymbal.wav
+        -cymbal_high.wav
+        -small-triangle-down.png
+        -tick.wav
+        -tick_high.wav
+    -index.html
+    -metronome.js
+    -README.md
+    -rhythmTracker.js
+    -script.js
+    -styles.css
+    -tuner.js

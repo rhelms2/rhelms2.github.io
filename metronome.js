@@ -1,3 +1,6 @@
+// metronome.js is in charge of scheduling the metronome and polyrhytms, and handling the visualizer
+// Authors: Miles Anderson, Ryan Helms, Dax Lynch, and Harry Robertson
+// Last Edited: 6/3/24
 class Metronome {
     constructor(audioContext) {
         this.audioContext = audioContext;
@@ -19,6 +22,16 @@ class Metronome {
         this.barContainer = document.getElementById('bar-container');
         this.polyBarContainer = document.getElementById('poly-bar-container');
         this.timeSignatureInput = document.getElementById('time-signature-input');
+
+
+        this.metCan = document.getElementById('metronome'); // Get the metronome div
+        this.metCanCtx = this.metCan.getContext('2d'); // Get the metronome canvas
+        this.metCanWid = this.metCan.width
+        this.metCanHei = this.metCan.height
+        this.metRad = 5
+
+        this.updateMetronomeDisplay = this.updateMetronomeDisplay.bind(this)
+
         this.bpmInput = document.getElementById('bpm-input'); // Get the BPM input element
         this.polyInput = null; 
         this.playButton = document.getElementById('play-button');
@@ -32,11 +45,16 @@ class Metronome {
         this.timeSignatureP = this.timeSignature * this.polyRatio;
         this.bpm = this.bpmInput.value; // Get the initial BPM value
 
+        this.oddNote = 0;
+
         this.audiosPerBeat = [0,0,0,0]; //keeps track of which audio is to be played
         this.audiosPerBeatP = Array(Math.ceil(this.timeSignatureP)).fill(1);  //keeps track of which audio is to be played, polyrhythm
 
         this.notePeriod = 60 / this.bpm; // Calculate the initial note period based on BPM
         this.notePeriodP = 60 / (this.bpm  * this.polyRatio); // Calculate the polyrhythms initial note period based on BPM
+
+
+        this.animationFrameId = requestAnimationFrame(this.updateMetronomeDisplay);
 
         this.timeSignatureInput.addEventListener('input', (event) => {
             this.timeSignature = parseInt(event.target.value);
@@ -65,22 +83,19 @@ class Metronome {
 
         this.generateBar();
         this.intervalId = setInterval(() => this.scheduler(), 100);
-
-        this.visualizer = new MetronomeAnimation('canvas', 'speed', 'radius', 'archeight');   // Instantiate BouncingDotAnimation
-        this.visualizer.start();
     }
 
-    onOff() { // Allows the play button to operate as a toggle
+    onOff() { // Toggles the Metronome On/Off
         const currentValue = this.playButton.value;
         if (currentValue === "On") {
             this.playButton.value = "Off";
-            console.log("Turned off"); // Add code to stop the metronome if it's playing
+   //         console.log("Turned off"); // Add code to stop the metronome if it's playing
             this.playing = false;
             this.lastNote = 0;
             this.lastNoteP = 0;
         } else {
             this.playButton.value = "On"; 
-            console.log("Turned on");
+     //       console.log("Turned on");
             this.playing = true;
             this.lastNote = this.audioContext.currentTime - this.notePeriod + 0.001;
             if (this.polyrhythmActive) {
@@ -91,7 +106,7 @@ class Metronome {
         }
     }
 
-    polyOnOff() { // Allows the poly button to operate as a toggle
+    polyOnOff() { // Toggles PolyRhythm On/Off
         const currentValue = this.polyButton.value;
         if (currentValue === "On") {
             this.polyButton.innerText = "+Polyrhythm";
@@ -143,6 +158,7 @@ class Metronome {
     }
 
     playNote() {
+        // Plays the note determined from beat index
         const beatIndex = this.currentBeat % this.timeSignature;
         const sourceNode = this.audioContext.createBufferSource();
         if (beatIndex === 0) { // First note of a bar
@@ -153,10 +169,13 @@ class Metronome {
         sourceNode.connect(this.audioContext.destination);
         sourceNode.start(this.lastNote + this.notePeriod);
         this.lastNote += this.notePeriod;
+        this.oddNote = (this.oddNote + 1) % 2;
         this.currentBeat++;
     }
 
     playNotePoly() {
+        // Plays the note determined by the PolyRhythm Index
+
         const beatIndex = this.currentBeat % this.timeSignature;
         const beatIndexP = this.currentBeatP % Math.ceil(this.timeSignatureP);
     
@@ -173,6 +192,7 @@ class Metronome {
             sourceNode.connect(this.audioContext.destination);
             sourceNode.start(this.lastNote + this.notePeriod);
             this.lastNote += this.notePeriod;
+            this.oddNote = (this.oddNote + 1) % 2;
             this.currentBeat++;
         }
     
@@ -205,6 +225,7 @@ class Metronome {
     }
 
     noteToBePlayed() {
+        // Determines next note
         if (this.polyrhythmActive === false) {
             return this.lastNote + this.notePeriod < this.audioContext.currentTime + this.evalPeriod;
         } else {
@@ -217,7 +238,6 @@ class Metronome {
         this.playButton.addEventListener('click', this.onOff);
         this.polyButton.addEventListener('click', this.polyOnOff);
 
-        // Load the audio files
         for (let i = 0; i < this.audioFiles.length; i++) { // initializes the audio files from array
             const response = await fetch(this.audioFiles[i]);
             const arrayBuffer = await response.arrayBuffer();
@@ -297,6 +317,7 @@ class Metronome {
     }
 
     handleSoundSelection(event) {
+        // Determines which sound the user has chosen for the metronome
         const selectedSound = parseInt(event.target.dataset.sound);
         const beatIndex = Array.from(event.target.parentNode.parentNode.children).indexOf(event.target.parentNode);
         const track = event.target.dataset.track;
@@ -304,6 +325,7 @@ class Metronome {
     }
 
     updateMetronomeSound(selectedSound, beatIndex, track) {
+        // Ipdates sound after chosen
         if (track === "standard") {
             this.audiosPerBeat[beatIndex] = selectedSound;
         } else {
@@ -312,4 +334,28 @@ class Metronome {
         console.log(`Selected sound ${selectedSound} for beat ${beatIndex} for the ${track} track`);
     }
 
+    updateMetronomeDisplay(){
+        // Updates the metronome visualizer
+        let x = this.metCanWid/2;
+        const y = this.metCanHei/2;
+        this.metCanCtx.clearRect(0, 0, this.metCanWid, this.metCanHei);
+        if (this.playing){
+            let time = this.audioContext.currentTime - this.lastNote; //Time elapsed
+            if (time < 0){ //This implies we are in the period when it was just assigned;
+                time = this.notePeriod + time;
+            }
+            if (this.oddNote == 1){
+                time = -1 * time
+            }
+
+            x =  (0.5 *  Math.sin(time * Math.PI / this.notePeriod)) * this.metCanWid * .5 + this.metCanWid * .5
+        }
+        this.metCanCtx.beginPath();
+        this.metCanCtx.arc(x, y, this.metRad, 0, Math.PI * 2);
+        this.metCanCtx.fill();
+        this.metCanCtx.closePath();
+
+
+        this.animationFrameId = requestAnimationFrame(this.updateMetronomeDisplay);
+    } 
 }

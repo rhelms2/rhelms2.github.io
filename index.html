@@ -1,3 +1,9 @@
+<!-- 
+     index.html is in charge of organizing each of the different aspects of the application on the same webpae
+     and linking their .js files to the elements such as buttons
+     Authors: Miles Anderson, Ryan Helms, Dax Lynch, and Harry Robertson
+     Last Edited: 4/3/24
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,17 +33,7 @@
             </div>
             <div class="container">
                 <h2>Metronome</h2>
-                <div id="metronome-visualizer">
-                    <div class="controls">
-                        <label for="speed">Speed: </label>
-                        <input type="number" id="speed" value="5" min="1" max="100">
-                        <label for="radius">Radius: </label>
-                        <input type="number" id="radius" value="10" min="1" max="1000">
-                        <label for="archeight">Arc Height: </label>
-                        <input type="number" id="archeight" value="100" min="1" max="1000">
-                    </div>
-                    <canvas id="canvas" width="200" height="100"></canvas>
-                </div>
+                <canvas id="metronome" width="100%" height="20px"></canvas>
                 <div id="metronome-interface">
                     <div id="time-signature-container">
                         <label for="time-signature-input">Time Signature:</label>
@@ -54,7 +50,7 @@
                     </div>
                     <div id="sound-selector-container"></div>
                     <button id="play-button">Play</button>
-                    <button id="poly-button">Add Polyrhythm</button>
+                    <button id="poly-button">+Polyrhythm</button>
                 </div>
             </div>
         </div>
@@ -64,13 +60,16 @@
                 <canvas id="rhythm-display" width="200" height="200"></canvas>
                 <img id="scrolling-triangle" src="assets/small-triangle-down.png" alt="Scrolling Triangle">
             </div>
+            <div id="bpm-input-container">
+                <label for="bpm-input">BPM:</label>
+                <input type="number" id="rt-bpm-input" min="1" max="250" value="120">
+            </div>
             <button id="rhythm-button">Play</button>
         </div>
     </div>
     <script src="tuner.js"></script>
     <script src="rhythmTracker.js"></script>
     <script src="metronome.js"></script>
-    <script src="animation.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
