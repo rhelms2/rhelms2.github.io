@@ -76,10 +76,10 @@ a:hover {
   text-decoration: underline;
 }
 
-/*About me text*/
+/*Text sections*/
 .about {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 40px auto 80px auto;
   padding: 0 20px;
   text-align: left;
 }
@@ -141,6 +141,28 @@ ul {
 li {
   color: white;
   margin: 10px 0;
+}
+
+/**/
+/**/
+/* Buttons for games */
+/**/
+/**/
+.my-button {
+  background-color: rgb(48, 44, 44);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 100px;
+  padding: 8px 32px;
+  border: gray;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+.my-button:hover {
+  background-color: cyan;
+  color: black;
 }
 
 /**/
